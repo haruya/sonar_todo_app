@@ -1,0 +1,180 @@
+@charset "utf-8";
+
+* {
+  font-family: Helvetica, Arial, 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
+  font-size: 10px;
+  color: #000000;
+  margin: 0;
+  padding: 0;
+}
+
+.l {
+  text-align: left;
+}
+
+.c {
+  text-align: center;
+}
+
+.r {
+  text-align: right;
+}
+
+.mt5 {
+  margin-top: 5px;
+}
+
+.cRed {
+  color: red;
+}
+
+a {
+  text-decoration: none;
+  color: blue;
+}
+
+
+ul.errorMessage {
+  margin-bottom: 5px;
+}
+
+ul.errorMessage li {
+  color: red;
+}
+
+#message {
+  color: green;
+}
+
+#content {
+  width: 950px;
+  margin: 0 auto;
+}
+
+h2 {
+	font-size: 20px;
+	padding-left: 5px;
+	border-left: 5px solid navy;
+	margin: 5px;
+}
+
+/**
+ * プロジェクト、タスク共通部分
+ */
+.deleteProject, .projectDrag, .editProject, #addProject, .deleteTask, .taskDrag {
+  cursor: pointer;
+  color: blue;
+}
+.done {
+  text-decoration: line-through;
+  color: gray;
+}
+
+/**
+ * ログイン
+ */
+
+#loginDv {
+  width: 250px;
+  margin: 200px auto;
+}
+
+table#loginTbl {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table#loginTbl th {
+  font-weight: normal;
+  text-align: left;
+}
+
+/**
+ * プロジェクト
+ */
+ 
+#projectDv {
+  width: 600px;
+  margin: 50px auto;
+}
+
+table#projects {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table#projects thead th {
+  color: #ffffff;
+  background-color: navy;
+  border: 1px solid #000000;
+  padding: 3px;
+}
+
+table#projects tbody td {
+  border: 1px solid #000000;
+  padding: 3px;
+}
+
+/**
+ * タスク
+ */
+
+/* 一覧 */
+#taskDv {
+  width: 900px;
+  margin: 50px auto;
+}
+
+table#tasks {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table#tasks thead th {
+  color: #ffffff;
+  background-color: navy;
+  border: 1px solid #000000;
+  font-size: 9px;
+  padding: 3px;
+}
+
+table#tasks tbody td {
+  border: 1px solid #000000;
+  padding: 3px;
+}
+
+.before_work {
+  background-color: #ffffff;
+}
+
+.working {
+  background-color: yellow;
+}
+
+.after_work {
+  background-color: #cccccc;
+}
+
+/* タスク新規、編集 */
+
+#nyuryokuTaskDv {
+  width: 400px;
+  margin: 50px auto;
+}
+
+table#nyuryokuTaskTbl {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 5px;
+}
+
+table#nyuryokuTaskTbl th {
+  background-color: #cccccc;
+  border: 1px solid #000000;
+  padding: 3px;
+}
+
+table#nyuryokuTaskTbl td {
+  border: 1px solid #000000;
+  padding: 3px;
+}

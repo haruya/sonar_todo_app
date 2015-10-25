@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+{include file="template.head.tpl"}
+<style type="text/css">
+.deleteProject, .drag, .editProject {
+  cursor: pointer;
+  color: blue;
+}
+.done {
+  text-decoration: line-through;
+  color: gray;
+}
+</style>
+<script type="text/javascript">
+$(function() {
+  $('#newProject').focus();
+  $('#addProject').click(function() {
+    var projectMei = $('#newProject').val();
+    $.post('_ajax_add_project.php', {
+      projectMei: projectMei
+    }, function(rs) {
+      if ($('#projects').length) {
+        var e = $(
+          '<li id="project_' +rs+'" data-id="'+rs+'">' +
+          '<input type="checkbox" class="checkProject"> ' +
+          '<span></span> ' +
+          '<span class="editProject">[編集]</span> ' +
+          '<sapn class="deleteProject">[削除]</span> ' +
+          '<span class="drag">[drag]</span>' +
+          '</li>'
+        );
+        $('#projects').append(e).find('li:last span:eq(0)').text(projectMei);
+      } else {
+        $('#notProject').remove();
+        var e = $(
+          '<ul id="projects">' +
+          '<li id="project_' +rs+'" data-id="'+rs+'">' +
+          '<input type="checkbox" class="checkProject"> ' +
+          '<span></span> ' +
+          '<span class="editProject">[編集]</span> ' +
+          '<sapn class="deleteProject">[削除]</span> ' +
+          '<span class="drag">[drag]</span>' +
+          '</li>' +
+          '</ul>'
+        );
+        $('#content').append(e).find('li:last span:eq(0)').text(projectMei);
+      }
+      $('#newProject').val('').focus();
+    });
+  });
+
+  $(document).on('click', '.editProject', function() { // プロジェクト名編集
+    var id = $(this).parent().data('id');
+    var projectMei = $(this).prev().text();
+    $('#project_'+id)
+      .empty()
+      .append($('<input type="text"> ').attr('value',projectMei))
+      .append('<input type="button" value="更新" class="updateProject" />');
+    $('#project_'+id+' input:eq(0)').focus();
+  });
+
+  $(document).on('click', '.updateProject', function() { // プロジェクト名編集の更新処理
+    var id = $(this).parent().data('id');
+    var projectMei = $(this).prev().val();
+    $.post('_ajax_update_project.php', {
+      id: id,
+      projectMei: projectMei
+    }, function(rs) {
+      var e = $(
+        '<input type="checkbox" class="checkProject" /> ' +
+        '<span></span> ' +
+        '<span class="editProject">[編集]</span> ' +
+        '<span class="deleteProject">[削除]</span> ' +
+        '<span class="drag">[drag]</span>'
+      );
+      $('#project_'+id).empty().append(e).find('span:eq(0)').text(projectMei);
+    });
+  });
+
+  $('#projects').sortable({ // プロジェクト並び替え処理
+    axis: 'y',
+    opacity: 0.2,
+    handle: '.drag',
+    update: function() {
+      $.post('_ajax_sort_project.php', {
+        project: $(this).sortable('serialize')
+      });
+    }
+  });
+
+  $(document).on('click', '.checkProject', function() { // プロジェクトstatus変更処理
+    var id = $(this).parent().data('id');
+    var projectMei = $(this).next();
+    $.post('_ajax_check_project.php', {
+      id: id
+    }, function(rs) {
+      if (projectMei.hasClass('done')) {
+        projectMei.removeClass('done').next().addClass('editProject');
+      } else {
+        projectMei.addClass('done').next().removeClass('editProject');
+      }
+    });
+  });
+
+  $(document).on('click', '.deleteProject', function() { // プロジェクト削除処理
+    if (confirm('本当に削除しますか？')) {
+      var id = $(this).parent().data('id');
+      $.post('_ajax_delete_project.php', {
+        id: id
+      }, function(rs) {
+        $('#project_' + id).fadeOut(800);
+      });
+    }
+  });
+
+});
+</script>
+</head>
+<body>
+  <div id="container">
+{include file="template.header.tpl"}
+    <div id="content">
+{if isset($error)}
+      <ul class="errorMessage">
+  {foreach from=$error item=e}
+        <li>{$e|escape|default:''}</li>
+  {/foreach}
+      </ul>
+{/if}
+      <p>ログインID: {$loginInfo['loginId']}&nbsp;|&nbsp;ログインユーザ: {$loginInfo['loginUser']}</p>
+      <p><a href="logout.php">ログアウト</a></p>
+      <p>
+        <input type="text" id="newProject" />
+        <input type="button" id="addProject" value="追加" />
+      </p>
+{if isset($projectList)}
+    {if $projectList !== FALSE}
+        <ul id="projects">
+  {foreach from=$projectList item=pl}
+          <li id="project_{$pl['project_id']|default:''}" data-id="{$pl['project_id']|default:''}">
+            <input type="checkbox" class="checkProject" {if $pl['status']|default:'' == "done"}checked="checked"{/if} /> 
+            <span class="{$pl['status']|default:''}">{$pl['project_mei']|default:''}</span> 
+            <span {if $pl['status']|default:'' == "notyet"}class="editProject"{/if}>[編集]</span> 
+            <span class="deleteProject">[削除]</span> 
+            <span class="drag">[drag]</span>
+          </li>
+  {/foreach}
+        </ul>
+    {else}
+      <p id="notProject">現在プロジェクトは存在しません。</p>
+    {/if}
+{/if}
+    </div><!-- end_content -->
+{include file="template.footer.tpl"}
+  </div><!-- end_container -->
+</body>
+</html>
